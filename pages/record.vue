@@ -9,6 +9,12 @@
         録音停止
       </button>
     </div>
+    <div v-if="recording && !loading" class="flex items-center space-x-2 mt-4">
+      <svg class="animate-pulse h-5 w-5 text-red-600" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" fill="currentColor" />
+      </svg>
+      <span>録音中...</span>
+    </div>
     <div v-if="loading" class="flex items-center space-x-2 mt-4">
       <svg class="animate-spin h-5 w-5 text-blue-600" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
