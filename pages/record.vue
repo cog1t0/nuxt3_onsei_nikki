@@ -9,9 +9,6 @@
         録音停止
       </button>
     </div>
-<<<<<<< k3pnyr-codex/音声入力画面とテキスト変換の実装
-    <p v-if="transcript" class="mt-4">{{ transcript }}</p>
-=======
     <div v-if="loading" class="flex items-center space-x-2 mt-4">
       <svg class="animate-spin h-5 w-5 text-blue-600" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
@@ -20,17 +17,14 @@
       <span>処理中...</span>
     </div>
     <p v-else-if="transcript" class="mt-4">{{ transcript }}</p>
->>>>>>> main
   </div>
 </template>
 
 <script setup lang="ts">
 const recording = ref(false)
 const transcript = ref('')
-<<<<<<< k3pnyr-codex/音声入力画面とテキスト変換の実装
-=======
 const loading = ref(false)
->>>>>>> main
+
 let mediaRecorder: MediaRecorder | null = null
 let chunks: BlobPart[] = []
 
@@ -45,14 +39,6 @@ const startRecording = async () => {
     const blob = new Blob(chunks, { type: 'audio/webm' })
     const formData = new FormData()
     formData.append('file', blob, 'audio.webm')
-<<<<<<< k3pnyr-codex/音声入力画面とテキスト変換の実装
-    const res = await $fetch('/api/whisper', {
-      method: 'POST',
-      body: formData
-    })
-    // @ts-ignore
-    transcript.value = res.text || ''
-=======
     loading.value = true
     try {
       const res = await $fetch('/api/whisper', {
@@ -64,7 +50,6 @@ const startRecording = async () => {
     } finally {
       loading.value = false
     }
->>>>>>> main
   }
   mediaRecorder.start()
   recording.value = true
