@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="min-h-screen flex flex-col bg-gray-50">
     <header class="bg-gray-800 text-white p-4">
-      <nav class="max-w-3xl mx-auto flex justify-between">
+      <nav class="mx-auto flex justify-between items-center w-full max-w-md sm:max-w-3xl">
         <NuxtLink to="/" class="font-bold">おんせい日記</NuxtLink>
         <div class="space-x-4">
           <NuxtLink to="/login" class="hover:underline">ログイン</NuxtLink>
@@ -9,7 +9,7 @@
         </div>
       </nav>
     </header>
-    <main class="p-4 max-w-3xl mx-auto">
+    <main class="flex-1 p-4 w-full mx-auto max-w-md sm:max-w-3xl">
       <slot />
     </main>
   </div>

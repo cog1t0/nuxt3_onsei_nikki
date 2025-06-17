@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 space-y-4">
+  <div class="p-4 space-y-4 max-w-md mx-auto bg-white rounded shadow">
     <h1 class="text-xl font-bold">音声入力</h1>
     <div class="space-x-2">
       <button @click="startRecording" :disabled="recording" class="bg-blue-500 text-white px-3 py-1 rounded">
@@ -22,7 +22,12 @@
       </svg>
       <span>処理中...</span>
     </div>
-    <p v-else-if="transcript" class="mt-4">{{ transcript }}</p>
+    <textarea
+      v-else-if="transcript"
+      v-model="transcript"
+      rows="6"
+      class="mt-4 w-full p-2 border rounded"
+    />
   </div>
 </template>
 
