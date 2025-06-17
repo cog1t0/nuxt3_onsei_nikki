@@ -1,5 +1,7 @@
 # Nuxt Minimal Starter
 
+This project demonstrates a simple voice diary that can generate images from text using the OpenAI API.
+
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Setup
@@ -20,6 +22,10 @@ yarn install
 bun install
 ```
 
+### Environment variables
+
+Set `OPENAI_API_KEY` in your environment so the server routes can access the OpenAI API.
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
@@ -37,6 +43,8 @@ yarn dev
 # bun
 bun run dev
 ```
+
+After starting the dev server, visit `/record` to try recording audio and generating an image from the resulting text.
 
 ## Production
 

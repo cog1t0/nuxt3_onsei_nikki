@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 space-y-4">
+  <div class="p-4 space-y-4 max-w-md mx-auto bg-white rounded shadow">
     <h1 class="text-xl font-bold">音声入力</h1>
     <div class="space-x-2">
       <button @click="startRecording" :disabled="recording" class="bg-blue-500 text-white px-3 py-1 rounded">
@@ -22,14 +22,55 @@
       </svg>
       <span>処理中...</span>
     </div>
-    <p v-else-if="transcript" class="mt-4">{{ transcript }}</p>
+    <div v-else-if="transcript" class="mt-4 space-y-2">
+      <textarea
+        v-model="text"
+        ref="textArea"
+        rows="6"
+        class="mt-4 w-full p-2 border rounded"
+      />
+      <div class="flex space-x-2">
+        <button
+          v-for="emoji in emojiList"
+          :key="emoji"
+          @click="insertEmoji(emoji)"
+          class="text-2xl"
+        >
+          {{ emoji }}
+        </button>
+      </div>
+      <div class="flex items-center space-x-2 mt-2">
+        <span>気分:</span>
+        <button
+          v-for="m in moods"
+          :key="m"
+          @click="selectedMood = m"
+          :class="['text-2xl', selectedMood === m ? 'border rounded px-1' : '']"
+        >
+          {{ m }}
+        </button>
+      </div>
+      <button @click="generateImage" :disabled="imageLoading" class="bg-green-500 text-white px-3 py-1 rounded">
+        {{ imageLoading ? '生成中...' : '画像生成' }}
+      </button>
+      <div v-if="imageUrl" class="mt-2">
+        <img :src="imageUrl" alt="生成された画像" class="max-w-full rounded" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 const recording = ref(false)
 const transcript = ref('')
+const text = ref('')
 const loading = ref(false)
+const imageLoading = ref(false)
+const imageUrl = ref('')
+const selectedMood = ref('')
+const emojiList = ['😊', '😢', '😡', '😴', '☺️']
+const moods = ['😊', '😢', '😡', '😴']
+const textArea = ref<HTMLTextAreaElement | null>(null)
 
 let mediaRecorder: MediaRecorder | null = null
 let chunks: BlobPart[] = []
@@ -53,6 +94,7 @@ const startRecording = async () => {
       })
       // @ts-ignore
       transcript.value = res.text || ''
+      text.value = transcript.value
     } finally {
       loading.value = false
     }
@@ -65,6 +107,37 @@ const stopRecording = () => {
   if (mediaRecorder) {
     mediaRecorder.stop()
     recording.value = false
+  }
+}
+
+const insertEmoji = (emoji: string) => {
+  if (textArea.value) {
+    const el = textArea.value
+    const start = el.selectionStart
+    const end = el.selectionEnd
+    const current = text.value
+    text.value = current.slice(0, start) + emoji + current.slice(end)
+    nextTick(() => {
+      el.focus()
+      el.selectionStart = el.selectionEnd = start + emoji.length
+    })
+  } else {
+    text.value += emoji
+  }
+}
+
+const generateImage = async () => {
+  if (!text.value) return
+  imageLoading.value = true
+  try {
+    const res = await $fetch('/api/generate-image', {
+      method: 'POST',
+      body: { text: text.value }
+    })
+    // @ts-ignore
+    imageUrl.value = res.url || ''
+  } finally {
+    imageLoading.value = false
   }
 }
 </script>
