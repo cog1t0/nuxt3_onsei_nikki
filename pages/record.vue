@@ -22,12 +22,21 @@
       </svg>
       <span>処理中...</span>
     </div>
+    <p v-else-if="transcript" class="mt-4">{{ transcript }}</p>
     <textarea
       v-else-if="transcript"
       v-model="transcript"
       rows="6"
       class="mt-4 w-full p-2 border rounded"
     />
+    <div v-if="transcript" class="space-y-2">
+      <button @click="generateImage" :disabled="imageLoading" class="bg-green-500 text-white px-3 py-1 rounded">
+        {{ imageLoading ? '生成中...' : '画像生成' }}
+      </button>
+      <div v-if="imageUrl" class="mt-2">
+        <img :src="imageUrl" alt="生成された画像" class="max-w-full rounded" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -35,6 +44,8 @@
 const recording = ref(false)
 const transcript = ref('')
 const loading = ref(false)
+const imageLoading = ref(false)
+const imageUrl = ref('')
 
 let mediaRecorder: MediaRecorder | null = null
 let chunks: BlobPart[] = []
@@ -70,6 +81,21 @@ const stopRecording = () => {
   if (mediaRecorder) {
     mediaRecorder.stop()
     recording.value = false
+  }
+}
+
+const generateImage = async () => {
+  if (!transcript.value) return
+  imageLoading.value = true
+  try {
+    const res = await $fetch('/api/generate-image', {
+      method: 'POST',
+      body: { text: transcript.value }
+    })
+    // @ts-ignore
+    imageUrl.value = res.url || ''
+  } finally {
+    imageLoading.value = false
   }
 }
 </script>
